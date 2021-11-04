@@ -1,26 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ankieta
 {
     public partial class Form1 : Form
     {
-        private List<string> pytania = new List<string>();
-        private List<string> odpowiedzi = new List<string>();
-        private int aktualnePytanie;
+        private string[] pytania;
+        private string[] odpowiedzi;
+        private int aktualnePytanie = 0;
+        public Form1()
+        {
+            string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string fileLocation = Path.Combine(executableLocation, "plik.txt");
+            int count = 0;
+            foreach (string line in File.ReadLines(fileLocation))
+            {
+                if (line == "---") break;
+                count++;
+            }
+            pytania = new string[count];
+            odpowiedzi = new string[count];
+            for (int i = 0; i < count; i++)
+            {
+                pytania[i] = File.ReadLines(fileLocation).Skip(i).Take(1).First();
+            }
+
+            InitializeComponent();
+            Pytanie();
+        }
 
         private void Pytanie()
         {
-            if (aktualnePytanie == pytania.Count - 1)
+            if (aktualnePytanie == pytania.Length - 1)
             {
                 buttonNext.Text = "Koniec";
             }
@@ -41,66 +57,50 @@ namespace ankieta
             radioButton1.Text = pytanie[1];
             radioButton2.Text = pytanie[2];
             radioButton3.Text = pytanie[3];
-            try
-            {
-                switch (odpowiedzi[aktualnePytanie])
-                {
-                    case "a":
-                        radioButton1.Checked = true;
-                        radioButton2.Checked = false;
-                        radioButton3.Checked = false;
-                        break;
-                    case "b":
-                        radioButton1.Checked = false;
-                        radioButton2.Checked = true;
-                        radioButton3.Checked = false;
-                        break;
-                    case "c":
-                        radioButton1.Checked = false;
-                        radioButton2.Checked = false;
-                        radioButton3.Checked = true;
-                        break;
-                }
-            }
-            catch
-            {
-                radioButton1.Checked = false;
-                radioButton2.Checked = false;
-                radioButton3.Checked = false;
-            }
-                    
-        }
 
-        public Form1()
-        {
-            string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string fileLocation = Path.Combine(executableLocation, "plik.txt");
-            foreach (string line in File.ReadLines(fileLocation))
+            switch (odpowiedzi[aktualnePytanie])
             {
-                if (line == "---") break;
-                pytania.Add(line);
+                case "a":
+                    radioButton1.Checked = true;
+                    radioButton2.Checked = false;
+                    radioButton3.Checked = false;
+                    break;
+                case "b":
+                    radioButton1.Checked = false;
+                    radioButton2.Checked = true;
+                    radioButton3.Checked = false;
+                    break;
+                case "c":
+                    radioButton1.Checked = false;
+                    radioButton2.Checked = false;
+                    radioButton3.Checked = true;
+                    break;
+                default:
+                    radioButton1.Checked = false;
+                    radioButton2.Checked = false;
+                    radioButton3.Checked = false;
+                    break;
             }
-            aktualnePytanie = 0;
-            InitializeComponent();
-            Pytanie();
+
+
         }
 
         private void buttonNext_Click(object sender, EventArgs e)
         {
             if (radioButton1.Checked == true)
             {
-                odpowiedzi.Insert(aktualnePytanie, "a");
+                odpowiedzi[aktualnePytanie] = "a";
             }
             else if (radioButton2.Checked == true)
             {
-                odpowiedzi.Insert(aktualnePytanie, "b");
+                odpowiedzi[aktualnePytanie] = "b";
             }
             else if (radioButton3.Checked == true)
             {
-                odpowiedzi.Insert(aktualnePytanie, "c");
-            } 
+                odpowiedzi[aktualnePytanie] = "c";
+            }
 
-            if (aktualnePytanie == pytania.Count - 1)
+            if (aktualnePytanie == pytania.Length - 1)
             {
                 Podsumowanie();
             }
@@ -135,7 +135,8 @@ namespace ankieta
 
             foreach (var i in indeksymaksow)
             {
-                Console.WriteLine(klucz[i]);
+                var form = new Form2(klucz[i]);
+                form.Show();
             }
         }
     }
