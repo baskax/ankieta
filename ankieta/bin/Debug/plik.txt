@@ -1,0 +1,5 @@
+jak sie dzis czujesz?;zle;dobrze;srednio
+jak ci sie spalo?;kiepsko;umiarkowanie;najlepiej
+jakie masz nastawienie?;nie mów do mnie;stresuje sie;zlosc
+ktora noga wstajesz z lozka?;lewa;praw;zwlekam sie
+jak czesto sie usmiechasz?;bardzo;umiarkowanie;wcale
